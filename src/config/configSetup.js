@@ -9,9 +9,12 @@ const config = {
   DBHOST: process.env.DBHOST,
   DBPORT: Number(process.env.DBPORT),
   DBDIALECT: process.env.DBDIALECT,
-  CLOUD_NAME:process.env.CLOUD_NAME,
-  API_KEY:process.env.API_KEY,
-  API_SECRET:process.env.API_SECRET,
+  // CLOUD_NAME:process.env.CLOUD_NAME,
+  // API_KEY:process.env.API_KEY,
+  // API_SECRET:process.env.API_SECRET,
+  AZURE_ACCT_NAME:process.env.AZURE_ACCT_NAME,
+  AZURE_ACCT_KEY: process.env.AZURE_ACCT_KEY,
+  AZURE_CONTAINER_NAME: process.env.AZURE_CONTAINER_NAME,
 };
 
 const getSanitizedConfig = (config) => {

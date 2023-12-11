@@ -3,7 +3,7 @@ import ConflictError from "../errors/conflict.js";
 import FormService from "../service/fromService.js";
 import { StatusCodes } from "http-status-codes";
 import formSchema from "../validate/formValidator.js";
-import cloudinary from "../helpers/imageConfig.js";
+import  containerClient  from '../config/configSetup.js';
 
 const FormController = {
   create: async (req, res) => {
@@ -28,14 +28,25 @@ const FormController = {
         `user with email ${email}  or phone ${phone_number} already exists`
       );
 
-    const uploadedImage = await cloudinary.uploader.upload(image.path);
+        // Upload image to Azure Blob Storage
+        const blobName = `${userExists.id}_${Date.now()}_${image.originalname}`;
+        const blockBlobClient = containerClient.getBlockBlobClient(blobName);
+
+         // Set the Content-Type header to indicate that it's an image
+       const options = { blobHTTPHeaders: { blobContentType: document.mimetype } };
+
+
+       await blockBlobClient.upload(image.buffer, image.buffer.length, options);
+
+       
+      const documentUrl = image && image.buffer ? blockBlobClient.url : '';
 
     const newForm = await FormService.createForm(
       name,
       email,
       phone_number,
       country,
-      uploadedImage.secure_url
+      documentUrl
     );
 
     res.status(StatusCodes.CREATED).json({

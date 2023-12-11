@@ -1,10 +1,17 @@
-import { v2 as cloudinary } from "cloudinary";
+import {
+  StorageSharedKeyCredential,
+  BlobServiceClient,
+} from "@azure/storage-blob";
 import config from "../config/configSetup.js";
 
-cloudinary.config({
-  cloud_name: config.CLOUD_NAME,
-  api_key: config.API_KEY,
-  api_secret: config.API_SECRET,
-});
+const accountName = config.AZURE_ACCT_NAME;
+const accountKey = config.AZURE_ACCT_KEY;
 
-export default cloudinary;
+const blobServiceClient = new BlobServiceClient(
+  `https://${accountName}.blob.core.windows.net`,
+  new StorageSharedKeyCredential(accountName, accountKey)
+);
+
+const containerName = config.AZURE_CONTAINER_NAME;
+export const containerClient =
+  blobServiceClient.getContainerClient(containerName);
